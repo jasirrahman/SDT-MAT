@@ -1,8 +1,20 @@
 function TD_SDTv2()
     % Main function TD-SDT
-    project_dir = '/Users/jasirrahman/Desktop/McGinley/D'' + C + Survivial Function Update';
-    file_path = fullfile(project_dir, 'data', 'OCT_behavior.csv');
-    df = readtable(file_path);
+    file = path;
+    %check general file info
+    info = tdmsinfo(file);
+    %check channels
+    tdmsreadprop(file);
+    %load channels
+    channelsToLoad = ["Trial Number", "NC Time (chord)", "React Time (chord)", "Trial Result"];
+    %read necessary parts of tdms file into MATLAB
+    data = tdmsread(file, ...
+    ChannelGroupName='Untitled', ...
+    ChannelNames = channelsToLoad, ...
+    TimeStep = seconds(1)); 
+    %alter data to transform from 1x1 cell to double
+    timetable = data{1};
+    df = timetable2table(timetable);
 
     % Fix noise durations
     df = df(~isinf(df.noise_dur), :); % Remove rows where noise_dur is infinity
